@@ -12,6 +12,7 @@ Project Notes
 '''
 import sys
 import random
+import math
 
 lowercaseCharacters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
@@ -22,6 +23,9 @@ capitalCharacters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
 specialCharacters = ['~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', 
                      '_', '=', '+', '[', '{', '}', ']', '\\', '|', ';', ':', '\'', 
                      '\"', ',', '<', '.', '>', '/', '?']
+
+numericalCharacters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
 def main():
     if len(sys.argv) == 2 and sys.argv[1] == "-server".lower(): # if the user has 1 argument and it is exactly -server
         print(f"{sys.argv[1]}")
@@ -32,27 +36,49 @@ def main():
 def cliProject():
     generatedPassword = ""
     characterList = []
-    length = max(0 , int(input("Select Length: ")))
+    passLength = max(0 , int(get_number("Select Length: ")))
     lowercase = get_bool("Has Lower? ")
     if (lowercase):
         characterList.extend(lowercaseCharacters)
     captial = get_bool("Has Captial? ")
     if (captial):
         characterList.extend(capitalCharacters)
+    numerical = get_bool("Has Numbers? ")
+    if (numerical):
+        characterList.extend(numericalCharacters)
     special = get_bool("Has Special? ")
     if (special):
         characterList.extend(specialCharacters)
     
+    if (not characterList):
+        print("no chracter space chosen")
+        return
 
-    for _ in range(length):
+    for _ in range(passLength):
         chosenItem = chooseCharacter(characterList)
         generatedPassword = generatedPassword + chosenItem
     print(f"{generatedPassword}")
+    print(f"{passwordEntropy(characterList, passLength)}")
     return
 
 def chooseCharacter(listOptions):
-    character = random.randint(0, len(listOptions))
+    character = random.randrange(0, len(listOptions))
     return listOptions[character]
+
+''' 
+Entropy Equation
+E = L × log_2(R)
+
+E -> Password Entropy
+L -> Number of characters (length of password)
+R -> Number of options for each letter
+'''
+def passwordEntropy(listOptions, length):
+    R = len(listOptions)
+    return length * (math.log2(R))
+
+def calculateTimeToCrack(cracksPerSecond, generatedPass):
+    return
 
 # Source - https://stackoverflow.com/a/32616663
 # Posted by Joran Beasley, modified by community. See post 'Timeline' for change history
@@ -61,16 +87,16 @@ def chooseCharacter(listOptions):
 def get_bool(prompt):
     while True:
         try:
-           return {"true":True,"false":False}[input(prompt).lower()]
+           return {"yes":True,"no":False}[input(prompt).lower()]
         except KeyError:
-           print("Invalid input please enter True or False!")
+           print("Invalid input please enter Yes or No!")
 
 def get_number(prompt):
     while True:
         try:
            return int(input(prompt))
         except KeyError:
-           print("Invalid input please enter a positive number")
+           print("Invalid input please enter a number")
 
 
 if __name__ == "__main__":
