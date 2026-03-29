@@ -36,6 +36,7 @@ def main():
 def cliProject():
     generatedPassword = ""
     characterList = []
+    cracksPerSecond = 10000
     passLength = max(0 , int(get_number("Select Length: ")))
     lowercase = get_bool("Has Lower? ")
     if (lowercase):
@@ -58,8 +59,11 @@ def cliProject():
         chosenItem = chooseCharacter(characterList)
         generatedPassword = generatedPassword + chosenItem
     print(f"Generated Password of length {passLength}: {generatedPassword}")
+    print(f"Number of possible combinations {math.pow(len(characterList), passLength)}")
     print(f"Password entropy: appx. {math.trunc(passwordEntropy(characterList, passLength))} bits")
-    print(f"Time to Crack ({passLength} per sec): appx. {math.trunc(calculateTimeToCrack(10000, characterList, passLength))} years")
+    print(f"Time to Crack ({cracksPerSecond} per sec): appx. {calculateTimeToCrack(cracksPerSecond, characterList, passLength)}")
+    print(f"Probability being cracked on first guess: {100 * calculateProbability(characterList, passLength, 1)}% chance")
+    print(f"Probability being cracked within x [time period]")
     return
 
 def chooseCharacter(listOptions):
@@ -88,10 +92,72 @@ X -> Guesses per second
 N -> Character space ^ length of password
 
 '''
+
 def calculateTimeToCrack(cracksPerSecond, listOptions, generatedPasswordLength):
-    N = math.pow(len(listOptions), generatedPasswordLength)
-    denom = cracksPerSecond * 60 * 60 * 24 * 365
-    return N / denom
+    
+    total_passwords = math.pow(len(listOptions), generatedPasswordLength)
+
+    total_seconds = total_passwords / cracksPerSecond
+
+    intervals = (
+        ('years', 31557600),
+        ('days', 86400),
+        ('hours', 3600),
+        ('minutes', 60),
+        ('seconds', 1),
+    )
+
+    result = []
+    for name, count in intervals:
+        value = total_seconds // count
+        if value > 0:
+            result.append(f"{int(value)} {name}")
+            total_seconds -= value * count
+
+    if not result:
+        return "0 seconds"
+    return ', '.join(result)
+
+'''
+The equation for correct guesses
+  m
+-----
+ N^L
+
+m -> total guesses
+N -> Character space
+L -> Length of password
+'''
+# We can find guesses in a time frame by multiplying
+# The number of guesses per second by the time alloted in seconds
+
+def calculateProbability(listOptions, generatedPassworedLength, guessesMade):
+    return guessesMade / math.pow(len(listOptions), generatedPassworedLength)
+
+'''
+Time in Seconds for each
+Minute : 60
+Hour : 3600
+Day : 86400
+Week : 604800
+Month : 2629800
+Year : 31557600
+'''
+
+def convertTimetoSeconds(time, format):
+    timeConversions = [
+        {"Minute" : 60},
+        {"Hour" : 3600},
+        {"Day" : 86400},
+        {"Week" : 604800},
+        {"Month" : 2629800},
+        {"Year" : 31557600}
+    ]
+
+    if (format not in timeConversions):
+        return -1
+
+    return time * timeConversions[format]
 
 # Source - https://stackoverflow.com/a/32616663
 # Posted by Joran Beasley, modified by community. See post 'Timeline' for change history
