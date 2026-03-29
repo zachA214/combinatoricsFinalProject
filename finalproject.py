@@ -57,8 +57,9 @@ def cliProject():
     for _ in range(passLength):
         chosenItem = chooseCharacter(characterList)
         generatedPassword = generatedPassword + chosenItem
-    print(f"{generatedPassword}")
-    print(f"{passwordEntropy(characterList, passLength)}")
+    print(f"Generated Password of length {passLength}: {generatedPassword}")
+    print(f"Password entropy: appx. {math.trunc(passwordEntropy(characterList, passLength))} bits")
+    print(f"Time to Crack ({passLength} per sec): appx. {math.trunc(calculateTimeToCrack(10000, characterList, passLength))} years")
     return
 
 def chooseCharacter(listOptions):
@@ -77,8 +78,20 @@ def passwordEntropy(listOptions, length):
     R = len(listOptions)
     return length * (math.log2(R))
 
-def calculateTimeToCrack(cracksPerSecond, generatedPass):
-    return
+'''
+Crack Time Equation
+          N
+----------------------
+X * 60 * 60 * 24 * 365
+
+X -> Guesses per second
+N -> Character space ^ length of password
+
+'''
+def calculateTimeToCrack(cracksPerSecond, listOptions, generatedPasswordLength):
+    N = math.pow(len(listOptions), generatedPasswordLength)
+    denom = cracksPerSecond * 60 * 60 * 24 * 365
+    return N / denom
 
 # Source - https://stackoverflow.com/a/32616663
 # Posted by Joran Beasley, modified by community. See post 'Timeline' for change history
