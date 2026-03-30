@@ -13,6 +13,7 @@ Project Notes
 import sys
 import random
 import math
+import time
 
 lowercaseCharacters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
@@ -58,9 +59,16 @@ def cliProject():
     for _ in range(passLength):
         chosenItem = chooseCharacter(characterList)
         generatedPassword = generatedPassword + chosenItem
+    print("Generating password", end="", flush=True)
+    for i in range(5):
+        print(".", end="", flush=True)
+        time.sleep(0.25)
+    print()  # Move to the next line after progress indicator
     print(f"Generated Password of length {passLength}: {generatedPassword}")
-    print(f"Number of possible combinations {math.pow(len(characterList), passLength)}")
-    print(f"Password entropy: appx. {math.trunc(passwordEntropy(characterList, passLength))} bits")
+    print(f"Number of possible combinations {int(math.pow(len(characterList), passLength))}")
+    passEntropy = passwordEntropy(characterList, passLength)
+    print(f"Password entropy: appx. {math.trunc(passEntropy)} bits")
+    print(f"Password Strength: {defineEntropy(passEntropy)}")
     print(f"Time to Crack ({cracksPerSecond} per sec): appx. {calculateTimeToCrack(cracksPerSecond, characterList, passLength)}")
     print(f"Probability being cracked on first guess: {100 * calculateProbability(characterList, passLength, 1)}% chance")
     print(f"Probability being cracked within x [time period]")
@@ -99,6 +107,9 @@ def calculateTimeToCrack(cracksPerSecond, listOptions, generatedPasswordLength):
 
     total_seconds = total_passwords / cracksPerSecond
 
+    upperBound = 99999999999999999999999999999999999999999999999999 #years
+    lowerBound = 10 #seconds
+
     intervals = (
         ('years', 31557600),
         ('days', 86400),
@@ -108,14 +119,18 @@ def calculateTimeToCrack(cracksPerSecond, listOptions, generatedPasswordLength):
     )
 
     result = []
-    for name, count in intervals:
+    for (name, count) in (intervals):
         value = total_seconds // count
-        if value > 0:
-            result.append(f"{int(value)} {name}")
+        if (not result and name == "seconds" and value <= lowerBound): # return if time only has seconds and is less than lowerBound
+            return "Practically instantly"
+        if (value > 0):
+            result.append(f"{int(value)} {name}") 
             total_seconds -= value * count
+            if (name == "years" and value >= upperBound): # return if the amount of years is greater than upperBound
+                return "More time than the universe has"
 
-    if not result:
-        return "0 seconds"
+    if (not result):
+        return "Instantly"
     return ', '.join(result)
 
 '''
@@ -133,6 +148,24 @@ L -> Length of password
 
 def calculateProbability(listOptions, generatedPassworedLength, guessesMade):
     return guessesMade / math.pow(len(listOptions), generatedPassworedLength)
+
+# Each bit of entropy doubles the number of guesses needed to crack the password
+# Or simply 2^E guessed needed to crack a password with E bits of entropy
+# For example, 8 bits of entropy means 2^8 = 256 guesses needed to crack the password
+
+def defineEntropy(passwordEntropyValue):
+    if (not passwordEntropyValue): # Entropy not defined
+        return "No password - No entropy"
+    elif (passwordEntropyValue < 30): #Very weak
+        return "Very weak"
+    elif (passwordEntropyValue >= 30 and passwordEntropyValue < 50): #Weak
+        return "Weak"
+    elif (passwordEntropyValue >= 50 and passwordEntropyValue < 75): #Average
+        return "Average"
+    elif (passwordEntropyValue >= 75 and passwordEntropyValue < 120): #Strong
+        return "Strong"
+    elif (passwordEntropyValue >= 120): #Very strong
+        return "Very strong"
 
 '''
 Time in Seconds for each
