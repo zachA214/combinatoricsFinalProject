@@ -6,7 +6,6 @@ Project Notes
  - Probabilities of being cracked within a timeframe
  - Probability of being cracked in a single guess
  - You may determine what the character space is (captials, lowercase, special characters, etc.)
- - User defined length / minimum and maximum lengths
 
  - Discuss history of entropy
 '''
@@ -14,6 +13,7 @@ import sys
 import random
 import math
 import time
+from decimal import Decimal, getcontext
 
 lowercaseCharacters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
@@ -71,7 +71,7 @@ def cliProject():
     print(f"Password Strength: {defineEntropy(passEntropy)}")
     print(f"Time to Crack ({cracksPerSecond} per sec): appx. {calculateTimeToCrack(cracksPerSecond, characterList, passLength)}")
     print(f"Probability being cracked on first guess: {100 * calculateProbability(characterList, passLength, 1)}% chance")
-    print(f"Probability being cracked within x [time period]")
+    print(f"Probability being cracked within 1 month: {100 * calculateProbability(characterList, passLength, (cracksPerSecond * convertTimetoSeconds(1, "Month")))}% chance")
     return
 
 def chooseCharacter(listOptions):
@@ -80,7 +80,7 @@ def chooseCharacter(listOptions):
 
 ''' 
 Entropy Equation
-E = L × log_2(R)
+E = L * log_2(R)
 
 E -> Password Entropy
 L -> Number of characters (length of password)
@@ -147,7 +147,9 @@ L -> Length of password
 # The number of guesses per second by the time alloted in seconds
 
 def calculateProbability(listOptions, generatedPassworedLength, guessesMade):
-    return guessesMade / math.pow(len(listOptions), generatedPassworedLength)
+    N = Decimal(len(listOptions)) ** Decimal(generatedPassworedLength)
+    guesses = Decimal(guessesMade)
+    return guesses / N
 
 # Each bit of entropy doubles the number of guesses needed to crack the password
 # Or simply 2^E guessed needed to crack a password with E bits of entropy
@@ -178,14 +180,14 @@ Year : 31557600
 '''
 
 def convertTimetoSeconds(time, format):
-    timeConversions = [
-        {"Minute" : 60},
-        {"Hour" : 3600},
-        {"Day" : 86400},
-        {"Week" : 604800},
-        {"Month" : 2629800},
-        {"Year" : 31557600}
-    ]
+    timeConversions = {
+        "Minute" : 60,
+        "Hour" : 3600,
+        "Day" : 86400,
+        "Week" : 604800,
+        "Month" : 2629800,
+        "Year" : 31557600
+    }
 
     if (format not in timeConversions):
         return -1
@@ -207,7 +209,7 @@ def get_number(prompt):
     while True:
         try:
            return int(input(prompt))
-        except KeyError:
+        except:
            print("Invalid input please enter a number")
 
 
