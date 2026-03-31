@@ -9,3 +9,5 @@ https://www.w3schools.com/python/ref_math_trunc.asp
 
 Entropy References
 https://proton.me/blog/what-is-password-entropy
+https://www.geeksforgeeks.org/computer-networks/password-entropy-in-cryptography/
+https://en.wikipedia.org/wiki/History_of_entropy#Later_developments
