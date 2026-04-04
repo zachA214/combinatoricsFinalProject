@@ -15,6 +15,10 @@ import math
 import time
 from decimal import Decimal, getcontext
 
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from datetime import datetime
+
 lowercaseCharacters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
@@ -27,8 +31,24 @@ specialCharacters = ['~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
 
 numericalCharacters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/serverstatus", methods=["GET"])
+def server_response():
+    return jsonify({
+        "reply": f"Server up as of {datetime.now().isoformat()}"
+    })
+
+@app.route("/getHistory", methods=["GET"])
+def entropy_history():
+    return jsonify({
+        "reply": f"details go here"
+    })
+
 def main():
     if len(sys.argv) == 2 and sys.argv[1] == "-server".lower(): # if the user has 1 argument and it is exactly -server
+        app.run(debug=True, host='0.0.0.0', port=5002)
         print(f"{sys.argv[1]}")
         return
     cliProject() # Command line based
