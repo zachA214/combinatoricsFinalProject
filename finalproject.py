@@ -18,6 +18,7 @@ from decimal import Decimal, getcontext
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime
+import base64
 
 lowercaseCharacters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 
                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
@@ -40,10 +41,17 @@ def server_response():
         "reply": f"Server up as of {datetime.now().isoformat()}"
     })
 
-@app.route("/getHistory", methods=["GET"])
+@app.route("/www.entropyhistory", methods=["GET"])
 def entropy_history():
+    with open("testimage.png", "rb") as f:
+        encoded = base64.b64encode(f.read()).decode('utf-8') # make the image be able to be sent over flask
     return jsonify({
-        "reply": f"details go here"
+        "reply": f'''
+        <div style="text-align: center; font-size: large;"> 
+            <h1>Website Under Construction</h1> 
+            <img src="data:image/png;base64,{encoded}" /> 
+        </div>
+        '''
     })
 
 def main():
