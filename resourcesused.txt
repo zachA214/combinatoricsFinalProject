@@ -6,6 +6,8 @@ https://www.geeksforgeeks.org/python/pass-a-list-to-a-function-in-python/
 https://www.geeksforgeeks.org/python/log-functions-python/
 https://www.w3schools.com/python/ref_math_pow.asp
 https://www.w3schools.com/python/ref_math_trunc.asp
+https://www.w3schools.com/python/ref_math_prod.asp
+https://www.w3schools.com/howto/howto_css_two_columns.asp
 
 Entropy References
 https://proton.me/blog/what-is-password-entropy

@@ -47,9 +47,38 @@ def entropy_history():
         encoded = base64.b64encode(f.read()).decode('utf-8') # make the image be able to be sent over flask
     return jsonify({
         "reply": f'''
-        <div style="text-align: center; font-size: large;"> 
-            <h1>Website Under Construction</h1> 
-            <img src="data:image/png;base64,{encoded}" /> 
+        <div style="text-align: center;"> 
+
+            <h1 style="font-size: 2.5rem;">History of Entropy</h1>
+            <h2>Website Under Construction</h2> 
+
+            <div style="width: 100%; overflow: hidden;">
+                <div style="
+                    float: left;
+                    width: 50%;
+                    padding: 10px;
+                    height: 300px;
+                    background-color: #aaa;
+                    box-sizing: border-box;
+                ">
+                    <h2>Column 1</h2>
+                    <img src="data:image/png;base64,{encoded}" /> 
+                    <p>Some text..</p>
+                </div>
+
+                <div style="
+                    float: left;
+                    width: 50%;
+                    padding: 10px;
+                    height: 300px;
+                    background-color: #bbb;
+                    box-sizing: border-box;
+                ">
+                    <h2>Column 2</h2>
+                    <p>Some text..</p>
+                </div>
+            </div>
+
         </div>
         '''
     })
