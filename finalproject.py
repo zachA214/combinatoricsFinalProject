@@ -43,7 +43,7 @@ def server_response():
 
 @app.route("/www.entropyhistory", methods=["GET"])
 def entropy_history():
-    with open("testimage.png", "rb") as f:
+    with open("imgs/rudolfcalusius.jpg", "rb") as f:
         encoded = base64.b64encode(f.read()).decode('utf-8') # make the image be able to be sent over flask
     return jsonify({
         "reply": f'''
@@ -57,20 +57,21 @@ def entropy_history():
                     float: left;
                     width: 50%;
                     padding: 10px;
-                    height: 300px;
+                    height: 5000px;
                     background-color: #aaa;
                     box-sizing: border-box;
                 ">
                     <h2>Column 1</h2>
                     <img src="data:image/png;base64,{encoded}" /> 
                     <p>Some text..</p>
+                    <img src="data:image/png;base64,{encoded}" /> 
                 </div>
 
                 <div style="
                     float: left;
                     width: 50%;
                     padding: 10px;
-                    height: 300px;
+                    height: auto;
                     background-color: #bbb;
                     box-sizing: border-box;
                 ">
@@ -78,7 +79,6 @@ def entropy_history():
                     <p>Some text..</p>
                 </div>
             </div>
-
         </div>
         '''
     })
