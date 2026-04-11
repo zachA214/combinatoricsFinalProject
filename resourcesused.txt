@@ -12,4 +12,6 @@ https://www.w3schools.com/howto/howto_css_two_columns.asp
 Entropy References
 https://proton.me/blog/what-is-password-entropy
 https://www.geeksforgeeks.org/computer-networks/password-entropy-in-cryptography/
-https://en.wikipedia.org/wiki/History_of_entropy#Later_developments
+https://en.wikipedia.org/wiki/History_of_entropy
+https://en.wikipedia.org/wiki/Password_strength#Entropy_as_a_measure_of_password_strength
+https://www.okta.com/identity-101/password-entropy/

@@ -44,7 +44,13 @@ def server_response():
 @app.route("/www.entropyhistory", methods=["GET"])
 def entropy_history():
     with open("imgs/rudolfcalusius.jpg", "rb") as f:
-        encoded = base64.b64encode(f.read()).decode('utf-8') # make the image be able to be sent over flask
+        encodedRudolf = base64.b64encode(f.read()).decode('utf-8') # make the image be able to be sent over flask
+    with open("imgs/ludwigbotlzmann.jpg", "rb") as f:
+        encodedLudwig = base64.b64encode(f.read()).decode('utf-8')
+    with open("imgs/erwinschrödinger.jpg", "rb") as f:
+        encodeedSchrödinger = base64.b64encode(f.read()).decode('utf-8')
+    with open("imgs/claudeshannon.jpg", "rb") as f:
+        encodedShannon = base64.b64encode(f.read()).decode('utf-8')
     return jsonify({
         "reply": f'''
         <div style="text-align: center;"> 
@@ -55,29 +61,47 @@ def entropy_history():
             <div style="width: 100%; overflow: hidden;">
                 <div style="
                     float: left;
-                    width: 50%;
+                    width: 100%;
                     padding: 10px;
-                    height: 5000px;
-                    background-color: #aaa;
-                    box-sizing: border-box;
-                ">
-                    <h2>Column 1</h2>
-                    <img src="data:image/png;base64,{encoded}" /> 
-                    <p>Some text..</p>
-                    <img src="data:image/png;base64,{encoded}" /> 
-                </div>
-
-                <div style="
-                    float: left;
-                    width: 50%;
-                    padding: 10px;
-                    height: auto;
+                    height: 3000px;
                     background-color: #bbb;
                     box-sizing: border-box;
                 ">
-                    <h2>Column 2</h2>
-                    <p>Some text..</p>
+                    <h1>Rudolf Clausius</h1>
+                    <p style="font-size: 18px;">In 1854, Rudolf Clausius, created the first concept of entropy. 
+                    In comparison to modern mathematical and information based entropy, this entropy was in the realm of thermodynamics</p>
+                    <br/>
+                    <img src="data:image/png;base64,{encodedRudolf}" style = "height: 500px; width 350px;"> </> 
+                    <p>Source: https://upload.wikimedia.org/wikipedia/commons/4/40/Clausius.jpg</p>
+                    
+                    <h1>Ludwig Boltzmann</h1>
+                    <p style="font-size: 18px;">Later in 1877, Ludwig Boltzmann, developed a statisitcal mechanics appraoch to Clausius's definition.
+                    In his idea, entropy is defined as "a statisical 'mixedupness' or disorder". This became the cornerstone of statisical mechanics.</p>
+                    <img src="data:image/png;base64,{encodedLudwig}" style = "height: 500px; width 350px;"> </> 
+                    <p>Source: https://en.wikipedia.org/wiki/Ludwig_Boltzmann#/media/File:Boltzmann2.jpg</p>
+
+                    <h1>Erwin Schrödinger</h1>
+                    <p style="font-size: 18px;">Much later in 1944, Erwin Schrödinger, adapted Boltzmanns interpretation of entropy 
+                    in his book What is Life?. In simple terms, he defined that states of matter random distribution is lower when entropy is also lower</p>
+                    <img src="data:image/png;base64,{encodeedSchrödinger}" style = "height: 500px; width 350px;"> </> 
+                    <p>Source: https://en.wikipedia.org/wiki/Erwin_Schr%C3%B6dinger#/media/File:Erwin_Schr%C3%B6dinger_-_Narodowe_Archiwum_Cyfrowe_(1-E-939).jpg</p>
+
+                    <h1>Claude Shannon</h1>
+                    <p style="font-size: 18px;">Claude Shannon find something similar to classical entropy, Information Entropy. He came up with
+                    the nconcept in 1948 while working at Bell Telephone. Information Entropy gives a value to the "average level of uncertainty
+                    or information associated with the variable's potential states or possible outcomes". Then from Information Entropy we have
+                    Password Entropy; which is the measure of how unpredicatable and difficult to guess a password is. To understand the output
+                    of password entropy we get a value in bits, which can then be interpreted as being as strong as a string of that number of bits.
+                    So a password with entropy 30, is as secure as a string of 30 randomly chosen bits (found by 2 to the power of 30) </p>
+                    <img src="data:image/png;base64,{encodedShannon}" style = "height: 500px; width 350px;"> </> 
+                    <p>Source: https://en.wikipedia.org/wiki/Claude_Shannon#/media/File:C.E._Shannon._Tekniska_museet_43069_(cropped).jpg</p>
                 </div>
+                Sources Used: <br>
+                https://proton.me/blog/what-is-password-entropy <br>
+                https://www.geeksforgeeks.org/computer-networks/password-entropy-in-cryptography/ <br>
+                https://en.wikipedia.org/wiki/History_of_entropy <br>
+                https://en.wikipedia.org/wiki/Password_strength#Entropy_as_a_measure_of_password_strength <br>
+                https://www.okta.com/identity-101/password-entropy/
             </div>
         </div>
         '''
