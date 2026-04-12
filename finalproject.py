@@ -56,7 +56,6 @@ def entropy_history():
         <div style="text-align: center;"> 
 
             <h1 style="font-size: 2.5rem;">History of Entropy</h1>
-            <h2>Website Under Construction</h2> 
 
             <div style="width: 100%; overflow: hidden;">
                 <div style="
@@ -105,6 +104,16 @@ def entropy_history():
             </div>
         </div>
         '''
+    })
+
+@app.route("/www.passwordgenerator", methods=["GET"])
+def generate_password():
+    return jsonify({
+        "reply": f'''
+    <div style="text-align: center;">
+    Hi
+    </div>
+    '''
     })
 
 def main():
