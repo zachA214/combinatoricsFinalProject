@@ -113,13 +113,61 @@ def generate_password():
     <div style="text-align: center;">
     <h1> Password Generator </h1>
     </div>
-    <div>
-    <div style="max-width: 300px; display: flex; align-items: center; gap: 0.5rem">
-        <label>Password Length:</label>
-        <label>1</label>
-        <input type="range" min="1" max="100" value="15" />
-        <label>100</label>
+    <div style="display: inline-block; margin-left: 50px; padding: 10px; border-style: solid; border-width: 1px; width: 20%-50px">
+        <div style="max-width: 300px; display: flex; align-items: center; gap: 0.5rem;">
+            <label style="white-space: nowrap; flex-shrink: 0;">Password Length:</label>
+            <label>1</label>
+            <input id="passwordLength" type="range" min="1" max="128" value="15" />
+            <label>128</label>
+        </div>
+        <label id="currentValue">Length: 15</label>
+        <br>
+        <input type="checkbox" id="hasNumbers">
+        <label for="hasNumbers">Include numbers (1,2,3...)</label>
+        <br>
+        <input type="checkbox" id="hasLowercase">
+        <label for="hasLowercase">Include lowercase characters (a,b,c...)</label>
+        <br>
+        <input type="checkbox" id="hasCaptial">
+        <label for="hasCaptial">Include captial characters (A,B,C...)</label>
+        <br>
+        <input type="checkbox" id="hasSpecial">
+        <label for="hasSpecial">Include special charaters (?,!,$...)</label>
     </div>
+        <div style="display: inline-block; margin-left: 50px; padding: 10px; border-style: solid; border-width: 1px; width: 30%-100px">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label style="white-space: nowrap; flex-shrink: 0;">Generated Password:</label>
+        </div>
+        <label id="currentValue">Length: 15</label>
+        <br>
+        <input type="checkbox" id="hasNumbers">
+        <label for="hasNumbers">Include numbers (1,2,3...)</label>
+        <br>
+        <input type="checkbox" id="hasLowercase">
+        <label for="hasLowercase">Include lowercase characters (a,b,c...)</label>
+        <br>
+        <input type="checkbox" id="hasCaptial">
+        <label for="hasCaptial">Include captial characters (A,B,C...)</label>
+        <br>
+        <input type="checkbox" id="hasSpecial">
+        <label for="hasSpecial">Include special charaters (?,!,$...)</label>
+    </div>
+        </div>
+        <div style="display: inline-block; margin-left: 50px; padding: 10px; border-style: solid; border-width: 1px; width: 40% -150px">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label style="white-space: nowrap; flex-shrink: 0;">Password Information</label>
+       </div>
+        <label id="possibleCombinations">Possible Combinations:</label>
+        <br>
+        <label id="passwordEntropy">Password entropy:</label>
+        <br>
+        <label id="passwordStrength">Password Strength:</label>
+        <br>
+        <label id="timeToCrackperSec">Time to Crack:</label>
+        <br>
+        <label id="probabilityFirst">Probability of being cracked on first guess:</label>
+        <br>
+        <label id="probabilityAmount">Probabilty of being cracked within x:</label>
     </div>
     '''
     })
