@@ -111,7 +111,15 @@ def generate_password():
     return jsonify({
         "reply": f'''
     <div style="text-align: center;">
-    Hi
+    <h1> Password Generator </h1>
+    </div>
+    <div>
+    <div style="max-width: 300px; display: flex; align-items: center; gap: 0.5rem">
+        <label>Password Length:</label>
+        <label>1</label>
+        <input type="range" min="1" max="100" value="15" />
+        <label>100</label>
+    </div>
     </div>
     '''
     })
