@@ -110,66 +110,97 @@ def entropy_history():
 def generate_password():
     return jsonify({
         "reply": f'''
-    <div style="text-align: center;">
-    <h1> Password Generator </h1>
-    </div>
-    <div style="display: inline-block; margin-left: 50px; padding: 10px; border-style: solid; border-width: 1px; width: 20%-50px">
-        <div style="max-width: 300px; display: flex; align-items: center; gap: 0.5rem;">
-            <label style="white-space: nowrap; flex-shrink: 0;">Password Length:</label>
-            <label>1</label>
-            <input id="passwordLength" type="range" min="1" max="128" value="15" />
-            <label>128</label>
+        <div style="text-align: center;">
+            <h1>Password Generator</h1>
         </div>
-        <label id="currentValue">Length: 15</label>
-        <br>
-        <input type="checkbox" id="hasNumbers">
-        <label for="hasNumbers">Include numbers (1,2,3...)</label>
-        <br>
-        <input type="checkbox" id="hasLowercase">
-        <label for="hasLowercase">Include lowercase characters (a,b,c...)</label>
-        <br>
-        <input type="checkbox" id="hasCaptial">
-        <label for="hasCaptial">Include captial characters (A,B,C...)</label>
-        <br>
-        <input type="checkbox" id="hasSpecial">
-        <label for="hasSpecial">Include special charaters (?,!,$...)</label>
-    </div>
-        <div style="display: inline-block; margin-left: 50px; padding: 10px; border-style: solid; border-width: 1px; width: 30%-100px">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <label style="white-space: nowrap; flex-shrink: 0;">Generated Password:</label>
+        <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+            <div style="padding: 15px; border: 1px solid black; width: 300px;">
+                <div style="margin-bottom: 10px;">
+                    <strong>Password Length</strong>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span>1</span>
+                    <input id="passwordLength" type="range" min="1" max="128" value="15" style="flex-grow: 1;">
+                    <span>128</span>
+                </div>
+                <div style="margin: 10px 0;">
+                    <span id="currentValue">Length: 15</span>
+                </div>
+                <div>
+                    <input type="checkbox" id="hasNumbers">
+                    <label for="hasNumbers">Include numbers (1,2,3...)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="hasLowercase">
+                    <label for="hasLowercase">Include lowercase (a,b,c...)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="hasCapital">
+                    <label for="hasCapital">Include uppercase (A,B,C...)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="hasSpecial">
+                    <label for="hasSpecial">Include special (?,!,$...)</label>
+                </div>
+                <div style="margin-top: 15px; text-align: center;">
+                    <button id="generateButton">Generate Password</button>
+                </div>
+            </div>
+
+            <div style="padding: 15px; border: 1px solid black; width: 300px;">
+                <div style="margin-bottom: 10px;">
+                    <strong>Generated Password</strong>
+                </div>
+                <div style="padding: 10px; border: 1px solid #ccc; overflow-wrap: anywhere;">
+                    fihefH@$HIHihiH@P(#$ho@Rrgrojieopmwfkepowfjpiewomfeofguewfpjoekwf[pjepowguoifojkewpmdewoinwfiuehwipowkp$JK
+                </div>
+            </div>
+
+            <div style="padding: 15px; border: 1px solid black; width: 300px;">
+                <div style="margin-bottom: 10px;">
+                    <strong>Password Information</strong>
+                </div>
+                <div>Possible Combinations:</div>
+                <div>Password Entropy:</div>
+                <div>Password Strength:</div>
+                <div>Time to Crack:</div>
+                <div>Probability (first guess):</div>
+                <div>Probability (within time):</div>
+            </div>
         </div>
-        <label id="currentValue">Length: 15</label>
-        <br>
-        <input type="checkbox" id="hasNumbers">
-        <label for="hasNumbers">Include numbers (1,2,3...)</label>
-        <br>
-        <input type="checkbox" id="hasLowercase">
-        <label for="hasLowercase">Include lowercase characters (a,b,c...)</label>
-        <br>
-        <input type="checkbox" id="hasCaptial">
-        <label for="hasCaptial">Include captial characters (A,B,C...)</label>
-        <br>
-        <input type="checkbox" id="hasSpecial">
-        <label for="hasSpecial">Include special charaters (?,!,$...)</label>
-    </div>
-        </div>
-        <div style="display: inline-block; margin-left: 50px; padding: 10px; border-style: solid; border-width: 1px; width: 40% -150px">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <label style="white-space: nowrap; flex-shrink: 0;">Password Information</label>
-       </div>
-        <label id="possibleCombinations">Possible Combinations:</label>
-        <br>
-        <label id="passwordEntropy">Password entropy:</label>
-        <br>
-        <label id="passwordStrength">Password Strength:</label>
-        <br>
-        <label id="timeToCrackperSec">Time to Crack:</label>
-        <br>
-        <label id="probabilityFirst">Probability of being cracked on first guess:</label>
-        <br>
-        <label id="probabilityAmount">Probabilty of being cracked within x:</label>
-    </div>
     '''
+    })
+
+@app.route("/generatePassword", methods=["POST"])
+def generate_password_api(length, lower, caps, numbers, special, crackspersecond):
+    generationInformation = ["", 0, 0.0, "", 0.0, 0.0, 0.0] # [password, possible combinations, password entropy, password strength, time to crack, probability first guess, probability within time]
+    characterList = []
+    passLength = max(0 , int(length))
+    if (lower == "true"):
+        characterList.extend(lowercaseCharacters)
+    if (caps == "true"):
+        characterList.extend(capitalCharacters)
+    if (numbers == "true"):
+        characterList.extend(numericalCharacters)
+    if (special == "true"):
+        characterList.extend(specialCharacters)
+    
+    if (not characterList):
+        return jsonify({
+            "reply": "No character set chosen"
+        })
+
+    # Calculate password
+    for _ in range(passLength):
+        chosenItem = chooseCharacter(characterList)
+        generationInformation[0] = generationInformation[0] + chosenItem
+    #Calculate possible combinations
+    generationInformation[1] = int(math.pow(len(characterList), passLength))
+    #Calculate password entropy
+    generationInformation[2] = passwordEntropy(characterList, passLength)
+
+    return jsonify({
+        "reply": f"{generationInformation}"
     })
 
 def main():
