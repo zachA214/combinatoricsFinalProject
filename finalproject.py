@@ -151,7 +151,7 @@ def generate_password():
                 <div style="margin-bottom: 10px;">
                     <strong>Generated Password</strong>
                 </div>
-                <div style="padding: 10px; border: 1px solid #ccc; overflow-wrap: anywhere;">
+                <div style="padding: 10px; border: 1px solid #ccc; overflow-wrap: anywhere;" id="generatedPassword">
                     fihefH@$HIHihiH@P(#$ho@Rrgrojieopmwfkepowfjpiewomfeofguewfpjoekwf[pjepowguoifojkewpmdewoinwfiuehwipowkp$JK
                 </div>
             </div>
@@ -160,12 +160,12 @@ def generate_password():
                 <div style="margin-bottom: 10px;">
                     <strong>Password Information</strong>
                 </div>
-                <div>Possible Combinations:</div>
-                <div>Password Entropy:</div>
-                <div>Password Strength:</div>
-                <div>Time to Crack:</div>
-                <div>Probability (first guess):</div>
-                <div>Probability (within time):</div>
+                <div id="possibleCombinations">Possible Combinations:</div>
+                <div id="passwordEntropy">Password Entropy:</div>
+                <div id="passwordStrength">Password Strength:</div>
+                <div id="timeToCrack">Time to Crack:</div>
+                <div id="probabilityFirstGuess">Probability (first guess):</div>
+                <div id="probabilityWithinTime">Probability (within time):</div>
             </div>
         </div>
     '''
@@ -175,20 +175,32 @@ def generate_password():
 def generate_password_api(length, lower, caps, numbers, special, crackspersecond):
     generationInformation = ["", 0, 0.0, "", 0.0, 0.0, 0.0] # [password, possible combinations, password entropy, password strength, time to crack, probability first guess, probability within time]
     characterList = []
-    passLength = max(0 , int(length))
-    if (lower == "true"):
+    # Set password length to 0 if length is negative, otherwise set to length
+    try:
+        passLength = max(0 , int(length))
+    except:
+        passLength = 0
+    # Build character space
+    if (lower == True):
         characterList.extend(lowercaseCharacters)
-    if (caps == "true"):
+    if (caps == True):
         characterList.extend(capitalCharacters)
-    if (numbers == "true"):
+    if (numbers == True):
         characterList.extend(numericalCharacters)
-    if (special == "true"):
+    if (special == True):
         characterList.extend(specialCharacters)
     
+    # If no character space is chosen, return error message
     if (not characterList):
         return jsonify({
-            "reply": "No character set chosen"
+            "reply": ["",  0, 0.0, "N/A", 0.0, 0.0, 0.0]
         })
+    
+    #Set crackspersecond to 10000 if not a number or less than 0, otherwise set to crackspersecond
+    try:
+        crackspersecond = max(0, int(crackspersecond))
+    except:
+        crackspersecond = 10000
 
     # Calculate password
     for _ in range(passLength):
@@ -198,6 +210,14 @@ def generate_password_api(length, lower, caps, numbers, special, crackspersecond
     generationInformation[1] = int(math.pow(len(characterList), passLength))
     #Calculate password entropy
     generationInformation[2] = passwordEntropy(characterList, passLength)
+    #Calculate password strength
+    generationInformation[3] = defineEntropy(generationInformation[2])
+    #Calculate time to crack
+    generationInformation[4] = calculateTimeToCrack(crackspersecond, characterList, passLength)
+    #Calculate probability first guess
+    generationInformation[5] = calculateProbability(characterList, passLength, 1)
+    #Calculate probability within time
+    generationInformation[6] = calculateProbability(characterList, passLength, (crackspersecond * convertTimetoSeconds(1, "Month")))
 
     return jsonify({
         "reply": f"{generationInformation}"
