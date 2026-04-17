@@ -152,7 +152,7 @@ def generate_password():
                     <strong>Generated Password</strong>
                 </div>
                 <div style="padding: 10px; border: 1px solid #ccc; overflow-wrap: anywhere;" id="generatedPassword">
-                    fihefH@$HIHihiH@P(#$ho@Rrgrojieopmwfkepowfjpiewomfeofguewfpjoekwf[pjepowguoifojkewpmdewoinwfiuehwipowkp$JK
+                    Awaiting parameters...
                 </div>
             </div>
 
@@ -160,19 +160,61 @@ def generate_password():
                 <div style="margin-bottom: 10px;">
                     <strong>Password Information</strong>
                 </div>
-                <div id="possibleCombinations">Possible Combinations:</div>
-                <div id="passwordEntropy">Password Entropy:</div>
-                <div id="passwordStrength">Password Strength:</div>
-                <div id="timeToCrack">Time to Crack:</div>
-                <div id="probabilityFirstGuess">Probability (first guess):</div>
-                <div id="probabilityWithinTime">Probability (within time):</div>
+                <div style="display: flex; align-items: center; gap: 8px; border: 1px solid black;">
+                    <span>Possible Combinations:</span>
+                    <div id="possibleCombinations"
+                        style="flex: 1; min-width: 0; overflow-wrap: anywhere;">
+                         
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; border: 1px solid black;">
+                    <span>Password Entropy:</span>
+                    <div id="passwordEntropy"
+                        style="flex: 1; min-width: 0; overflow-wrap: anywhere;">
+                         
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; border: 1px solid black;">
+                    <span>Password Strength:</span>
+                    <div id="passwordStrength"
+                        style="flex: 1; min-width: 0; overflow-wrap: anywhere;">
+                         
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; border: 1px solid black;">
+                    <span>Time to Crack:</span>
+                    <div id="timeToCrack"
+                        style="flex: 1; min-width: 0; overflow-wrap: anywhere;">
+                         
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; border: 1px solid black;">
+                    <span>Probability (first guess):</span>
+                    <div id="probabilityFirstGuess"
+                        style="flex: 1; min-width: 0; overflow-wrap: anywhere;">
+                         
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; border: 1px solid black;">
+                    <span>Probability (within time):</span>
+                    <div id="probabilityWithinTime"
+                        style="flex: 1; min-width: 0; overflow-wrap: anywhere;">
+                         
+                    </div>
+                </div>
             </div>
         </div>
     '''
     })
 
-@app.route("/generatePassword", methods=["POST"])
-def generate_password_api(length, lower, caps, numbers, special, crackspersecond):
+@app.route("/generatePassword", methods=["POST"])     
+def generate_password_api():
+    length = request.json.get("length") 
+    lower = request.json.get("lower") 
+    caps = request.json.get("caps") 
+    numbers = request.json.get("numbers") 
+    special = request.json.get("special") 
+    crackspersecond = request.json.get("crackspersecond") 
     generationInformation = ["", 0, 0.0, "", 0.0, 0.0, 0.0] # [password, possible combinations, password entropy, password strength, time to crack, probability first guess, probability within time]
     characterList = []
     # Set password length to 0 if length is negative, otherwise set to length
@@ -193,7 +235,7 @@ def generate_password_api(length, lower, caps, numbers, special, crackspersecond
     # If no character space is chosen, return error message
     if (not characterList):
         return jsonify({
-            "reply": ["",  0, 0.0, "N/A", 0.0, 0.0, 0.0]
+            "reply": ["", "0", "0.0", "N/A", "0.0", "0.0", "0.0"]
         })
     
     #Set crackspersecond to 10000 if not a number or less than 0, otherwise set to crackspersecond
@@ -207,20 +249,20 @@ def generate_password_api(length, lower, caps, numbers, special, crackspersecond
         chosenItem = chooseCharacter(characterList)
         generationInformation[0] = generationInformation[0] + chosenItem
     #Calculate possible combinations
-    generationInformation[1] = int(math.pow(len(characterList), passLength))
+    generationInformation[1] = str(int(math.pow(len(characterList), passLength)))
     #Calculate password entropy
-    generationInformation[2] = passwordEntropy(characterList, passLength)
+    generationInformation[2] = str(passwordEntropy(characterList, passLength))
     #Calculate password strength
-    generationInformation[3] = defineEntropy(generationInformation[2])
+    generationInformation[3] = defineEntropy(float(generationInformation[2]))
     #Calculate time to crack
-    generationInformation[4] = calculateTimeToCrack(crackspersecond, characterList, passLength)
+    generationInformation[4] = str(calculateTimeToCrack(crackspersecond, characterList, passLength))
     #Calculate probability first guess
-    generationInformation[5] = calculateProbability(characterList, passLength, 1)
+    generationInformation[5] = str(calculateProbability(characterList, passLength, 1))
     #Calculate probability within time
-    generationInformation[6] = calculateProbability(characterList, passLength, (crackspersecond * convertTimetoSeconds(1, "Month")))
+    generationInformation[6] = str(calculateProbability(characterList, passLength, (crackspersecond * convertTimetoSeconds(1, "Month"))))
 
     return jsonify({
-        "reply": f"{generationInformation}"
+        "reply": generationInformation
     })
 
 def main():
